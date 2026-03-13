@@ -1,734 +1,893 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en">
 
 <head>
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <title>Fluxivo - Smart Tools for Modern Websites</title>
-  <!-- Tailwind CSS -->
+  <title>Fluxvio | Building Digital Excellence</title>
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <!-- Google Fonts & Material Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap"
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
     rel="stylesheet" />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
     rel="stylesheet" />
-  <!-- AOS (Animate on Scroll) CSS -->
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
   <script id="tailwind-config">
     tailwind.config = {
       darkMode: "class",
       theme: {
         extend: {
           colors: {
-            primary: "#0d9488",
-            "primary-light": "#2dd4bf",
-            "background-light": "#f6f6f8",
-            "background-dark": "#101622",
+            "primary": "#0d9488",
+            "background-light": "#f8fafc",
+            "background-dark": "#0f172a",
           },
           fontFamily: {
-            display: ["Inter", "sans-serif"],
+            "display": ["Inter", "sans-serif"]
           },
-          borderRadius: {
-            DEFAULT: "0.25rem",
-            lg: "0.5rem",
-            xl: "0.75rem",
-            full: "9999px",
+          borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+          keyframes: {
+            'fade-up': {
+              '0%': { opacity: '0', transform: 'translateY(30px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            'fade-in': {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            }
           },
+          animation: {
+            'fade-up': 'fade-up 0.8s cubic-bezier(0.2, 0.9, 0.3, 1) forwards',
+            'fade-in': 'fade-in 1s ease forwards',
+          }
         },
       },
-    };
+    }
   </script>
   <style>
     body {
-      font-family: "Inter", sans-serif;
+      font-family: 'Inter', sans-serif;
     }
 
-    .gradient-mesh {
-      background-color: #f6f6f8;
-      background-image:
-        radial-gradient(at 0% 0%,
-          rgba(13, 148, 136, 0.1) 0px,
-          transparent 50%),
-        radial-gradient(at 100% 0%,
-          rgba(45, 212, 191, 0.05) 0px,
-          transparent 50%);
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(12px);
     }
 
-    .bg-teal-gradient {
-      background: linear-gradient(135deg, #2dd4bf 0%, #0d9488 100%);
-    }
-
-    .text-teal-gradient {
-      background: linear-gradient(135deg, #2dd4bf 0%, #0d9488 100%);
+    .gradient-text {
+      background: linear-gradient(135deg, #0d9488 0%, #0ea5e9 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
-    /* AOS custom tweaks */
-    [data-aos] {
-      pointer-events: none;
+    /* Reveal animation on scroll */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.9s cubic-bezier(0.2, 0.9, 0.3, 1), transform 0.9s cubic-bezier(0.2, 0.9, 0.3, 1);
     }
 
-    [data-aos].aos-animate {
-      pointer-events: auto;
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Stagger children inside a revealed container */
+    .reveal-stagger>* {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s cubic-bezier(0.2, 0.9, 0.3, 1), transform 0.7s cubic-bezier(0.2, 0.9, 0.3, 1);
+    }
+
+    .reveal-stagger.active>* {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-stagger.active>*:nth-child(1) {
+      transition-delay: 0.1s;
+    }
+
+    .reveal-stagger.active>*:nth-child(2) {
+      transition-delay: 0.2s;
+    }
+
+    .reveal-stagger.active>*:nth-child(3) {
+      transition-delay: 0.3s;
+    }
+
+    .reveal-stagger.active>*:nth-child(4) {
+      transition-delay: 0.4s;
+    }
+
+    .reveal-stagger.active>*:nth-child(5) {
+      transition-delay: 0.5s;
+    }
+
+    .reveal-stagger.active>*:nth-child(6) {
+      transition-delay: 0.6s;
     }
   </style>
 </head>
 
-<body
-  class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display transition-colors duration-300 overflow-x-hidden">
-  <header
-    class="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
-        <div class="flex items-center gap-2">
-          <div class="bg-teal-gradient p-1.5 rounded-lg">
-            <svg class="w-6 h-6 text-white" fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-              <path d="M4 4H17.3334V17.3334H30.6666V30.6666H44V44H4V4Z" fill="currentColor"></path>
-            </svg>
-          </div>
-          <span class="text-xl font-bold tracking-tight">Fluxivo</span>
+<body class="bg-background-light text-slate-900 font-display">
+
+  <!-- Top Navigation (static, but subtle fade-in) -->
+  <header class="fixed top-0 left-0 right-0 z-50 glass-effect border-b border-slate-200 animate-fade-in"
+    style="animation-delay:0.1s; opacity:0; animation-fill-mode:forwards;">
+    <nav class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white">
+          <span class="material-symbols-outlined text-xl">polymer</span>
         </div>
-        <nav class="hidden md:flex items-center gap-8">
-          <a class="text-sm font-medium hover:text-primary transition-colors" href="#services">Services</a>
-          <a class="text-sm font-medium hover:text-primary transition-colors" href="#work">Our Work</a>
-          <a class="text-sm font-medium hover:text-primary transition-colors" href="#how-it-works">Process</a>
-          <a class="text-sm font-medium hover:text-primary transition-colors" href="#why-us">Benefits</a>
-          <a class="text-sm font-medium hover:text-primary transition-colors" href="#">Pricing</a>
-        </nav>
-        <div class="flex items-center gap-3">
-          <button
-            class="hidden sm:block px-4 py-2 text-sm font-semibold hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition-all">
-            Login
-          </button>
-          <button
-            class="bg-teal-gradient hover:opacity-90 text-white px-5 py-2 rounded-lg text-sm font-bold shadow-lg shadow-teal-500/20 transition-all">
-            Get Started
-          </button>
+        <span class="text-xl font-black tracking-tight text-slate-900">Fluxvio</span>
+      </div>
+      <div class="hidden md:flex items-center gap-10">
+        <a class="text-sm font-semibold text-slate-600 hover:text-primary transition-colors"
+          href="#services">Services</a>
+        <a class="text-sm font-semibold text-slate-600 hover:text-primary transition-colors" href="#work">Our Work</a>
+        <a class="text-sm font-semibold text-slate-600 hover:text-primary transition-colors" href="#process">Process</a>
+        <a class="text-sm font-semibold text-slate-600 hover:text-primary transition-colors"
+          href="#benefits">Benefits</a>
+        <a class="text-sm font-semibold text-slate-600 hover:text-primary transition-colors" href="#pricing">Pricing</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Hero Section (initial animation via class, but we want it visible immediately) -->
+  <section class="relative min-h-screen flex items-center pt-20 overflow-hidden">
+    <div class="absolute inset-0 z-0">
+      <div class="absolute inset-0 bg-gradient-to-br from-primary/10 via-white to-sky-50"></div>
+      <div class="absolute top-1/4 right-0 w-96 h-96 bg-primary/20 rounded-full blur-[120px] animate-fade-in"
+        style="animation-delay:0.2s; opacity:0; animation-fill-mode:forwards;"></div>
+      <div class="absolute bottom-1/4 left-0 w-72 h-72 bg-sky-300/20 rounded-full blur-[100px] animate-fade-in"
+        style="animation-delay:0.3s; opacity:0; animation-fill-mode:forwards;"></div>
+    </div>
+    <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center relative z-10">
+      <div class="space-y-8">
+        <div
+          class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-widest">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+          </span>
+          Now accepting Q4 projects
+        </div>
+        <h1 class="text-6xl md:text-7xl font-black text-slate-900 leading-[1.1] tracking-tight">
+          Building <span class="gradient-text">Digital</span> Excellence
+        </h1>
+        <p class="text-xl text-slate-600 leading-relaxed max-w-xl">
+          Sophisticated full-stack solutions for the next generation of digital products. We turn vision into reality
+          with precision engineering and world-class design.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <a class="px-8 py-4 bg-primary text-white font-bold rounded-xl shadow-lg shadow-primary/25 hover:bg-primary/90 transition-all"
+            href="#work">
+            View Our Work
+          </a>
+        </div>
+      </div>
+      <div class="relative hidden lg:block">
+        <div class="relative z-10 rounded-2xl overflow-hidden shadow-2xl border border-white/20">
+          <img class="w-full aspect-square object-cover" alt="High-quality modern laptop"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjOfIxCEgZLawZtUUHJboD3LA2ssrz9X7JbB_4QA7wX4zk8MhYg6oehDEbeXzCQNWOjIfXa85Os3Zvqjwpapv2J89Hr47BnZnjYU4iybVI9AGuRSqNIW4Xi2mPjV8je5VvZ2z7YB9QE2jg5aS0cTmPYfOCRQ7aQsMeuAXixy5qG8tg8-QlzoWyUr75D31-YJWMIo--DOYZeFAyJUtecNmxdgYev_xqpG01A33GMeF5qKWs3w5U3qKoV8t7hYOwJcBjW36xdNkkK8PF" />
+        </div>
+        <div class="absolute -bottom-6 -left-6 bg-white p-6 rounded-xl shadow-xl z-20 border border-slate-100">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center">
+              <span class="material-symbols-outlined">bolt</span>
+            </div>
+            <div>
+              <p class="text-2xl font-bold text-slate-900">99.9%</p>
+              <p class="text-xs font-medium text-slate-500 uppercase tracking-tighter">Performance Score</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </header>
-  <main>
-    <!-- Hero section with animations -->
-    <section class="relative pt-20 pb-16 lg:pt-32 lg:pb-24 overflow-hidden gradient-mesh">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div class="flex flex-col lg:flex-row items-center gap-12">
-          <div class="flex-1 text-center lg:text-left">
-            <div data-aos="fade-up" data-aos-duration="600"
-              class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 text-xs font-bold uppercase tracking-wider mb-6">
-              <span class="material-symbols-outlined text-sm">bolt</span>
-              Next-Gen Web Intelligence
-            </div>
-            <h1 data-aos="fade-up" data-aos-duration="700" data-aos-delay="100"
-              class="text-4xl md:text-6xl font-black tracking-tight leading-tight mb-6">
-              Smart Tools for
-              <span class="text-teal-gradient">Modern Websites</span>
-            </h1>
-            <p data-aos="fade-up" data-aos-duration="700" data-aos-delay="200"
-              class="text-lg md:text-xl text-slate-600 dark:text-slate-400 mb-8 max-w-2xl mx-auto lg:mx-0">
-              AI-powered tools that analyze, optimize, and improve websites
-              automatically. Scale your digital presence with data-driven
-              insights.
-            </p>
-            <div data-aos="fade-up" data-aos-duration="700" data-aos-delay="300"
-              class="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
-              <button
-                class="w-full sm:w-auto px-8 py-4 bg-teal-gradient text-white font-bold rounded-xl shadow-xl shadow-teal-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all">
-                Try Our Tools
-              </button>
-              <button
-                class="w-full sm:w-auto px-8 py-4 bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-bold rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all">
-                Get Started
-              </button>
-            </div>
-            <div data-aos="fade-up" data-aos-duration="700" data-aos-delay="400"
-              class="mt-12 flex flex-wrap items-center justify-center lg:justify-start gap-4 opacity-70">
-              <span class="text-xs font-bold uppercase tracking-widest text-slate-400">Trusted By</span>
-              <div class="flex gap-4">
-                <span
-                  class="px-3 py-1 bg-slate-200/50 dark:bg-slate-800 rounded-md text-sm font-semibold">NexaFlow</span>
-                <span class="px-3 py-1 bg-slate-200/50 dark:bg-slate-800 rounded-md text-sm font-semibold">Vantix</span>
-                <span
-                  class="px-3 py-1 bg-slate-200/50 dark:bg-slate-800 rounded-md text-sm font-semibold">ElevateIQ</span>
-                <span
-                  class="px-3 py-1 bg-slate-200/50 dark:bg-slate-800 rounded-md text-sm font-semibold">Synapse</span>
-              </div>
-            </div>
-          </div>
-          <div data-aos="fade-left" data-aos-duration="800" class="flex-1 w-full max-w-2xl">
-            <div class="relative group">
-              <div
-                class="absolute -inset-1 bg-gradient-to-r from-primary-light to-primary rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200">
-              </div>
-              <div
-                class="relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
-                <img alt="Dashboard Preview" class="w-full h-auto"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjM17SLV2645pY9qeXvT3ti-3aqUjydCxmoPrwqHo9Ad-Kok6bXgs-aNXK_BMzE0iRIem1NBnE7tFMp0TJvyY6GIqvNOghtYIenvizkUvPfb1UgQSVLc-Q0Xz5zqPpV-KxRTN6I2fuZ6E2l_hBls1_96B2qyV63Qhlj9k-l_HFiDQ5PqxfrMzOZtJvemYOGx1VUYp04EooP94StwDpv_yqyNqRzL7ryRAQnt-SByRHkEx8uzSrnbr6KA_gB-dDQUOGuH9j-Wr9OFc" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+  </section>
 
-    <!-- Services section -->
-    <section class="py-24 bg-white dark:bg-background-dark" id="services">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div data-aos="fade-up" class="text-center mb-16">
-          <h2 class="text-primary font-bold text-sm uppercase tracking-widest mb-3">
-            Our Expertise
-          </h2>
-          <h3 class="text-3xl md:text-4xl font-black mb-4">
-            Tailored Solutions for Tech Growth
-          </h3>
-          <p class="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-            Comprehensive tools and development services to scale your digital
-            presence.
-          </p>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <!-- card 1 -->
-          <div data-aos="fade-up" data-aos-delay="0"
-            class="p-8 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 hover:border-primary/50 transition-all group">
-            <div
-              class="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-6 group-hover:bg-teal-gradient group-hover:text-white transition-all">
-              <span class="material-symbols-outlined">health_metrics</span>
-            </div>
-            <h4 class="text-xl font-bold mb-3">Test Server Health Check</h4>
-            <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-              Monitor and check health/performance in real-time. Ensure 99.9%
-              uptime with our automated diagnostics.
-            </p>
-          </div>
-          <!-- card 2 -->
-          <div data-aos="fade-up" data-aos-delay="100"
-            class="p-8 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 hover:border-primary/50 transition-all group">
-            <div
-              class="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-6 group-hover:bg-teal-gradient group-hover:text-white transition-all">
-              <span class="material-symbols-outlined">ads_click</span>
-            </div>
-            <h4 class="text-xl font-bold mb-3">AI Ads Suggestion</h4>
-            <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-              Enter URL, AI suggests best ads for monetization. Maximize your
-              revenue with smart ad placement strategies.
-            </p>
-          </div>
-          <!-- card 3 -->
-          <div data-aos="fade-up" data-aos-delay="200"
-            class="p-8 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 hover:border-primary/50 transition-all group">
-            <div
-              class="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-6 group-hover:bg-teal-gradient group-hover:text-white transition-all">
-              <span class="material-symbols-outlined">web</span>
-            </div>
-            <h4 class="text-xl font-bold mb-3">Landing Page Development</h4>
-            <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-              Fast, optimized, and modern high-converting pages. Built with
-              the latest frameworks for maximum speed.
-            </p>
-          </div>
-          <!-- card 4 -->
-          <div data-aos="fade-up" data-aos-delay="300"
-            class="p-8 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 hover:border-primary/50 transition-all group">
-            <div
-              class="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-6 group-hover:bg-teal-gradient group-hover:text-white transition-all">
-              <span class="material-symbols-outlined">rocket_launch</span>
-            </div>
-            <h4 class="text-xl font-bold mb-3">MVP Page Development</h4>
-            <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-              Quickly build minimum viable products to test ideas. From
-              concept to launch in weeks, not months.
-            </p>
-          </div>
-          <!-- card 5 -->
-          <div data-aos="fade-up" data-aos-delay="400"
-            class="p-8 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 hover:border-primary/50 transition-all group">
-            <div
-              class="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-6 group-hover:bg-teal-gradient group-hover:text-white transition-all">
-              <span class="material-symbols-outlined">code</span>
-            </div>
-            <h4 class="text-xl font-bold mb-3">Web App Development</h4>
-            <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-              Full-stack frontend and backend development. Scalable
-              architectures tailored to your business needs.
-            </p>
-          </div>
-          <!-- card 6 (special) -->
-          <div data-aos="fade-up" data-aos-delay="500"
-            class="p-8 rounded-2xl bg-teal-gradient flex flex-col items-center justify-center text-center text-white">
-            <h4 class="text-2xl font-bold mb-4">Need a Custom Solution?</h4>
-            <p class="text-white/80 text-sm mb-6">
-              Our engineers are ready to tackle your unique challenges.
-            </p>
-            <button class="bg-white text-primary px-6 py-2 rounded-lg font-bold hover:bg-slate-100 transition-colors">
-              Contact Us
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Our Work / Projects section with added "View Site" button -->
-    <section class="py-24 bg-slate-50 dark:bg-slate-900/50" id="work">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div data-aos="fade-up" class="text-center mb-16">
-          <h2 class="text-primary font-bold text-sm uppercase tracking-widest mb-3">
-            Our Work
-          </h2>
-          <h3 class="text-3xl md:text-4xl font-black mb-4">
-            Recent Projects
-          </h3>
-          <p class="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-            A showcase of modern, high-converting websites we've built for our
-            clients.
-          </p>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <!-- Project 1 -->
-          <div data-aos="fade-up" data-aos-delay="0"
-            class="group bg-white dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col">
-            <div class="aspect-video bg-slate-100 overflow-hidden">
-              <img alt="Restaurant Website"
-                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjXVe6-F1l9tjW4Cu6NEcCJeHHRuYv8BcrrfkUvQt5I0djaiT34yqQ0wuDPwwXlFhyV8775_tpdqXWbWtHkgPrm0QMs6eCWmkuPKAmt4zmCsmMfauBrkkxip1Twsy46RWKXngWnB6u0UfKZOod6yyBN-LXEZHyNczASBLcTCp8hGwo4PDEuu0JDYE-DhIJx1yEZvzIysEIqeYuAsJ_kGBWnccmWRPqpHYu2kZFIwBgakWG3dROdiQY1hTvc4P_ejyzddAA-ZD661Q" />
-            </div>
-            <div class="p-6 flex-1 flex flex-col">
-              <h4 class="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
-                Savory &amp; Silk
-              </h4>
-              <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-4">
-                A high-end restaurant website featuring elegant typography and
-                immersive food photography to drive bookings.
-              </p>
-              <!-- View Site button (link) -->
-              <div class="mt-auto flex justify-end">
-                <a href="#" target="_blank" rel="noopener"
-                  class="inline-flex items-center gap-1 text-primary font-medium text-sm hover:underline group/btn">
-                  <span>View Site</span>
-                  <span
-                    class="material-symbols-outlined text-base transition-transform group-hover/btn:translate-x-0.5">arrow_forward</span>
-                </a>
-              </div>
-            </div>
-          </div>
-          <!-- Project 2 -->
-          <div data-aos="fade-up" data-aos-delay="100"
-            class="group bg-white dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col">
-            <div class="aspect-video bg-slate-100 overflow-hidden">
-              <img alt="Gym Website"
-                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfB5Nq3ar7bfYt-JwpGlffe3323lsslEw4v8HPVigNoy-8_2jFfer5IyksovN4GsLfRW2pbLOp5NmgAijvNshL3PXhBPxa7KSckCoaMMNE36ay46xd1VHTFwCVXNZA5oTKQc4ZI1DVWpTm7Urby0bRoJtqpDezMwJ2bX_yaXbized2rLzmNtORzqxS9M-ddZe-E7N7Cmpn17Kcf3uTmXIucrpM0E8mpCQZS1CKu18f2FT7Lrll_2kz21VhjC06Yd_7Zu1OrkjfFPE" />
-            </div>
-            <div class="p-6 flex-1 flex flex-col">
-              <h4 class="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
-                Iron Pulse Fitness
-              </h4>
-              <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-4">
-                Energetic and bold design optimized for mobile use, helping
-                fitness enthusiasts sign up for classes on the go.
-              </p>
-              <div class="mt-auto flex justify-end">
-                <a href="#" target="_blank" rel="noopener"
-                  class="inline-flex items-center gap-1 text-primary font-medium text-sm hover:underline group/btn">
-                  <span>View Site</span>
-                  <span
-                    class="material-symbols-outlined text-base transition-transform group-hover/btn:translate-x-0.5">arrow_forward</span>
-                </a>
-              </div>
-            </div>
-          </div>
-          <!-- Project 3 -->
-          <div data-aos="fade-up" data-aos-delay="200"
-            class="group bg-white dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col">
-            <div class="aspect-video bg-slate-100 overflow-hidden">
-              <img alt="Real Estate Website"
-                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJp9FFTMqIv4_WDGfhtq0fQ1yrCd5UXIRArW6QCBinxMGxQz-1Qhxo068kqpaNovPv37n3Zqeit1NwdqyZ7dfBhBRcFLXlkFosswH34KnTsA3YMRFaAzQs8WzpfH_MujVKQRFhAbkXaFY91D4GsPNSv80gyaWlk_WvJv4dZ0ww29VLajhqVhD89qAIQ1jkXpuVhZeSJGBSKnAM_S7pwhtvkg4MNmhvSjuwFsdzmyNGEXkXctnNIwSFYhMqnQLC-TSaifPQ9ATop6U" />
-            </div>
-            <div class="p-6 flex-1 flex flex-col">
-              <h4 class="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
-                Avenue Estates
-              </h4>
-              <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-4">
-                A clean, professional layout focused on clarity and ease of
-                navigation for luxury property listings.
-              </p>
-              <div class="mt-auto flex justify-end">
-                <a href="#" target="_blank" rel="noopener"
-                  class="inline-flex items-center gap-1 text-primary font-medium text-sm hover:underline group/btn">
-                  <span>View Site</span>
-                  <span
-                    class="material-symbols-outlined text-base transition-transform group-hover/btn:translate-x-0.5">arrow_forward</span>
-                </a>
-              </div>
-            </div>
-          </div>
-          <!-- Project 4 -->
-          <div data-aos="fade-up" data-aos-delay="300"
-            class="group bg-white dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col">
-            <div class="aspect-video bg-slate-100 overflow-hidden">
-              <img alt="Wellness Website"
-                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLxAI_sw1WgtxsNvyIVzCU8L1HDa0am-UkicCbDsvxJWuZTRkH_1A-KJqy3aKg5dEaGkRs0uH16SYfwnTsGxAOAfr_U1boOwwkL5mPUKNsX2CBQAS_djDlkTTP2OXOfXy8K6jZ9_WL5YMd9creOvuKc33WidKaTbHM-6P7BSD81zVfl4CbqLAyYUNtzQml-rG-cDVP-0miRCjZu1dY3fBthzeyzOUSVieiC4dpk1dHwoNQxekiw6xxtpHR_y7NJZYXQVllqiQRKt8" />
-            </div>
-            <div class="p-6 flex-1 flex flex-col">
-              <h4 class="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
-                Serenity Spa
-              </h4>
-              <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-4">
-                Calm, soothing aesthetic for a health and spa business,
-                utilizing soft colors to create a relaxing user journey.
-              </p>
-              <div class="mt-auto flex justify-end">
-                <a href="#" target="_blank" rel="noopener"
-                  class="inline-flex items-center gap-1 text-primary font-medium text-sm hover:underline group/btn">
-                  <span>View Site</span>
-                  <span
-                    class="material-symbols-outlined text-base transition-transform group-hover/btn:translate-x-0.5">arrow_forward</span>
-                </a>
-              </div>
-            </div>
-          </div>
-          <!-- Project 5 -->
-          <div data-aos="fade-up" data-aos-delay="400"
-            class="group bg-white dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col">
-            <div class="aspect-video bg-slate-100 overflow-hidden">
-              <img alt="Barbershop Website"
-                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxO9zODPwAeuS5TqkFUJAfPHbJQ2bnK9hXHnocugd-LzytBmuix2jJflIx0fU_HTnSnNyhHGzw678EL7BPnpjUSUbmO9DgxNK_i3bN136M30TKJTGYmSEA4KdElIvgOAm3mefSAOfRDap_LWfaJIFOYveDfNthAds0Kj6YmkDelGExH83TwAiuqmzzJBVoCPgn8cIykqw0j7WNxVBGFgvJEBoTwuFUrhjtGPgnNV7qW1dxVCl1igSTBRPbd6g9OnkyqJ6c1GI1PgM" />
-            </div>
-            <div class="p-6 flex-1 flex flex-col">
-              <h4 class="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
-                The Grooming Lounge
-              </h4>
-              <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-4">
-                A stylish, modern-vintage look for high-end grooming services
-                with integrated appointment scheduling.
-              </p>
-              <div class="mt-auto flex justify-end">
-                <a href="#" target="_blank" rel="noopener"
-                  class="inline-flex items-center gap-1 text-primary font-medium text-sm hover:underline group/btn">
-                  <span>View Site</span>
-                  <span
-                    class="material-symbols-outlined text-base transition-transform group-hover/btn:translate-x-0.5">arrow_forward</span>
-                </a>
-              </div>
-            </div>
-          </div>
-          <!-- Project 6 -->
-          <div data-aos="fade-up" data-aos-delay="500"
-            class="group bg-white dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col">
-            <div class="aspect-video bg-slate-100 overflow-hidden">
-              <img alt="Pet Services Website"
-                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBS90RdApo3Mq1JWWmi7jqM7FnsewX7NJKXtBGrUu_HrjCrFYUcn1qnJLnGaAeL9EpiZw1K4iaKTEJ2dow1_QPHA9V1jcdK8GaxkWUT2RmZjqRTBa3dGklgUGFc775Jv7wQKCIghZHgc-buveEIMw2I_Se_AgDlXw56zXy-sNyWPEUEdEy_DAnD7b4wAIv2YM-kt7nPaieXmJqgLya2L0HNROh0vebhwqs3deI_qIHuBLgth_UW_EnWQhPl8wzr2dWl2CrvMM_Guyo" />
-            </div>
-            <div class="p-6 flex-1 flex flex-col">
-              <h4 class="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
-                Happy Paws Care
-              </h4>
-              <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-4">
-                Friendly and playful design for pet care businesses, designed
-                to build trust with pet owners instantly.
-              </p>
-              <div class="mt-auto flex justify-end">
-                <a href="#" target="_blank" rel="noopener"
-                  class="inline-flex items-center gap-1 text-primary font-medium text-sm hover:underline group/btn">
-                  <span>View Site</span>
-                  <span
-                    class="material-symbols-outlined text-base transition-transform group-hover/btn:translate-x-0.5">arrow_forward</span>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="mt-12 text-center">
-          <button
-            class="px-8 py-3 border-2 border-primary text-primary hover:bg-primary hover:text-white font-bold rounded-xl transition-all">
-            View All Projects
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- How It Works -->
-    <section class="py-24 bg-white dark:bg-background-dark" id="how-it-works">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col lg:flex-row gap-16 items-center">
-          <div data-aos="fade-right" class="lg:w-1/2">
-            <h3 class="text-3xl md:text-4xl font-black mb-8">How It Works</h3>
-            <div class="space-y-12">
-              <div class="flex gap-6">
-                <div
-                  class="flex-shrink-0 w-10 h-10 bg-teal-gradient text-white rounded-full flex items-center justify-center font-bold">
-                  1
-                </div>
-                <div>
-                  <h5 class="text-xl font-bold mb-2">Enter Website</h5>
-                  <p class="text-slate-600 dark:text-slate-400">
-                    Simply input your URL into our platform. No complex
-                    integration required for initial analysis.
-                  </p>
-                </div>
-              </div>
-              <div class="flex gap-6">
-                <div
-                  class="flex-shrink-0 w-10 h-10 bg-teal-gradient text-white rounded-full flex items-center justify-center font-bold">
-                  2
-                </div>
-                <div>
-                  <h5 class="text-xl font-bold mb-2">AI Analyzes</h5>
-                  <p class="text-slate-600 dark:text-slate-400">
-                    Our neural networks scan your performance, SEO, and layout
-                    to find optimization opportunities.
-                  </p>
-                </div>
-              </div>
-              <div class="flex gap-6">
-                <div
-                  class="flex-shrink-0 w-10 h-10 bg-teal-gradient text-white rounded-full flex items-center justify-center font-bold">
-                  3
-                </div>
-                <div>
-                  <h5 class="text-xl font-bold mb-2">Get Recommendations</h5>
-                  <p class="text-slate-600 dark:text-slate-400">
-                    Receive a detailed report with actionable steps to improve
-                    speed and user experience.
-                  </p>
-                </div>
-              </div>
-              <div class="flex gap-6">
-                <div
-                  class="flex-shrink-0 w-10 h-10 bg-teal-gradient text-white rounded-full flex items-center justify-center font-bold">
-                  4
-                </div>
-                <div>
-                  <h5 class="text-xl font-bold mb-2">Improve Monetization</h5>
-                  <p class="text-slate-600 dark:text-slate-400">
-                    Apply AI-suggested changes to see immediate growth in
-                    conversions and revenue.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div data-aos="fade-left" class="lg:w-1/2">
-            <div class="relative p-4 rounded-3xl bg-slate-200 dark:bg-slate-800">
-              <div class="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-inner p-2">
-                <img alt="Process Visualization" class="rounded-xl w-full"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCh0jjmQV9twBTFj0u2Xq0CNkob55vHt0-oVXYITqcW-9H9rvmWwFCPzN6JqevxdIX4CRpqXKFIqGwgd0XEkhkkie0pnlYUKzfaLwz8CJr99CiZKHwPJcoeSc8KMIYpnYxNANVjSTviEE4aIj3eU2QRr_zo4m04VZzkVv055m_Ksy1-RSc0JpPEQyBs3jQELp0Nsmsibq0yHnQSQbYjtscoGtrpQ1EKbuVSZiUdyfDJVs1ZKeRzeerau1-ghMxiWqc-eFYQLuTH0M" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Why Choose Us -->
-    <section class="py-24 bg-white dark:bg-background-dark" id="why-us">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div data-aos="fade-up" class="text-center mb-16">
-          <h3 class="text-3xl md:text-4xl font-black mb-4">
-            Why Choose Fluxivo
-          </h3>
-          <p class="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-            We combine advanced AI with expert engineering to deliver superior
-            results.
-          </p>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <div data-aos="fade-up" data-aos-delay="0" class="text-center p-6">
-            <div class="text-primary mb-4">
-              <span class="material-symbols-outlined text-5xl">speed</span>
-            </div>
-            <h5 class="text-lg font-bold mb-2">Fast Development</h5>
-            <p class="text-slate-600 dark:text-slate-400 text-sm">
-              Rapid delivery cycles without compromising on quality or
-              performance.
-            </p>
-          </div>
-          <div data-aos="fade-up" data-aos-delay="100" class="text-center p-6">
-            <div class="text-primary mb-4">
-              <span class="material-symbols-outlined text-5xl">psychology</span>
-            </div>
-            <h5 class="text-lg font-bold mb-2">AI-Powered Insights</h5>
-            <p class="text-slate-600 dark:text-slate-400 text-sm">
-              Leverage modern machine learning to understand your users
-              better.
-            </p>
-          </div>
-          <div data-aos="fade-up" data-aos-delay="200" class="text-center p-6">
-            <div class="text-primary mb-4">
-              <span class="material-symbols-outlined text-5xl">grid_view</span>
-            </div>
-            <h5 class="text-lg font-bold mb-2">Scalable Solutions</h5>
-            <p class="text-slate-600 dark:text-slate-400 text-sm">
-              Infrastructure that grows with you, from MVP to enterprise
-              level.
-            </p>
-          </div>
-          <div data-aos="fade-up" data-aos-delay="300" class="text-center p-6">
-            <div class="text-primary mb-4">
-              <span class="material-symbols-outlined text-5xl">sell</span>
-            </div>
-            <h5 class="text-lg font-bold mb-2">Startup-Friendly</h5>
-            <p class="text-slate-600 dark:text-slate-400 text-sm">
-              Flexible pricing tiers designed for startups at every stage.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CTA -->
-    <section class="py-20">
-      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div data-aos="zoom-in"
-          class="bg-teal-gradient rounded-[2.5rem] px-8 py-16 md:px-16 text-center text-white relative overflow-hidden">
-          <div
-            class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl">
-          </div>
-          <div
-            class="absolute bottom-0 left-0 w-64 h-64 bg-teal-400/20 rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl">
-          </div>
-          <h2 class="text-3xl md:text-5xl font-black mb-6 relative z-10">
-            Ready to boost your website's performance?
-          </h2>
-          <p class="text-teal-50 text-lg mb-10 max-w-2xl mx-auto relative z-10">
-            Join 500+ companies using Fluxivo to optimize their digital
-            presence and increase conversions.
-          </p>
-          <div class="flex flex-col sm:flex-row gap-4 justify-center relative z-10">
-            <button
-              class="px-8 py-4 bg-white text-primary font-bold rounded-xl hover:bg-slate-100 transition-all shadow-xl">
-              Get Started Now
-            </button>
-            <button
-              class="px-8 py-4 bg-transparent border border-white/30 text-white font-bold rounded-xl hover:bg-white/10 transition-all">
-              Schedule a Demo
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 pt-16 pb-8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- footer content unchanged (omitted for brevity, but present in final) -->
-      <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-12 mb-16">
-        <div class="col-span-2 lg:col-span-2">
-          <div class="flex items-center gap-2 mb-6">
-            <div class="bg-teal-gradient p-1 rounded-lg">
-              <svg class="w-5 h-5 text-white" fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                <path d="M4 4H17.3334V17.3334H30.6666V30.6666H44V44H4V4Z" fill="currentColor"></path>
-              </svg>
-            </div>
-            <span class="text-xl font-bold tracking-tight">Fluxivo</span>
-          </div>
-          <p class="text-slate-600 dark:text-slate-400 max-w-xs mb-6">
-            Empowering modern web teams with AI-driven intelligence and
-            high-performance development services.
-          </p>
-          <div class="flex gap-4">
-            <a class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:bg-teal-gradient hover:text-white transition-all"
-              href="#">
-              <span class="material-symbols-outlined text-lg">share</span>
-            </a>
-            <a class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:bg-teal-gradient hover:text-white transition-all"
-              href="#">
-              <span class="material-symbols-outlined text-lg">hub</span>
-            </a>
-            <a class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:bg-teal-gradient hover:text-white transition-all"
-              href="#">
-              <span class="material-symbols-outlined text-lg">public</span>
-            </a>
-          </div>
-        </div>
-        <div>
-          <h6 class="font-bold text-slate-900 dark:text-white mb-6 uppercase text-xs tracking-widest">
-            Services
-          </h6>
-          <ul class="space-y-4 text-sm text-slate-600 dark:text-slate-400">
-            <li>
-              <a class="hover:text-primary transition-colors" href="#">Server Health</a>
-            </li>
-            <li>
-              <a class="hover:text-primary transition-colors" href="#">AI Ads</a>
-            </li>
-            <li>
-              <a class="hover:text-primary transition-colors" href="#">Landing Pages</a>
-            </li>
-            <li>
-              <a class="hover:text-primary transition-colors" href="#">MVP Dev</a>
-            </li>
-          </ul>
-        </div>
-        <div>
-          <h6 class="font-bold text-slate-900 dark:text-white mb-6 uppercase text-xs tracking-widest">
-            Company
-          </h6>
-          <ul class="space-y-4 text-sm text-slate-600 dark:text-slate-400">
-            <li>
-              <a class="hover:text-primary transition-colors" href="#">About Us</a>
-            </li>
-            <li>
-              <a class="hover:text-primary transition-colors" href="#">Our Process</a>
-            </li>
-            <li>
-              <a class="hover:text-primary transition-colors" href="#">Case Studies</a>
-            </li>
-            <li>
-              <a class="hover:text-primary transition-colors" href="#">Careers</a>
-            </li>
-          </ul>
-        </div>
-        <div>
-          <h6 class="font-bold text-slate-900 dark:text-white mb-6 uppercase text-xs tracking-widest">
-            Support
-          </h6>
-          <ul class="space-y-4 text-sm text-slate-600 dark:text-slate-400">
-            <li>
-              <a class="hover:text-primary transition-colors" href="#">Help Center</a>
-            </li>
-            <li>
-              <a class="hover:text-primary transition-colors" href="#">Contact</a>
-            </li>
-            <li>
-              <a class="hover:text-primary transition-colors" href="#">Privacy</a>
-            </li>
-            <li>
-              <a class="hover:text-primary transition-colors" href="#">Terms</a>
-            </li>
-          </ul>
-        </div>
-      </div>
+  <!-- Trusted By Section (reveal on scroll) -->
+  <section class="py-12 bg-white border-y border-slate-100 reveal" id="trusted">
+    <div class="max-w-7xl mx-auto px-6">
+      <p class="text-center text-xs font-bold uppercase tracking-[0.2em] text-slate-400 mb-8">Trusted by industry
+        leaders</p>
       <div
-        class="border-t border-slate-200 dark:border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-        <p class="text-xs text-slate-500 dark:text-slate-500">
-          © 2024 Fluxivo Inc. All rights reserved.
-        </p>
-        <div class="flex items-center gap-2">
-          <span class="w-2 h-2 rounded-full bg-green-500"></span>
-          <p class="text-xs text-slate-500 dark:text-slate-500 font-medium">
-            All systems operational
-          </p>
+        class="flex flex-wrap justify-center items-center gap-12 md:gap-20 opacity-40 grayscale hover:grayscale-0 transition-all duration-500">
+        <div class="flex items-center gap-2"><span
+            class="material-symbols-outlined text-3xl text-slate-900">hub</span><span
+            class="text-xl font-bold tracking-tighter text-slate-900">TechNova</span></div>
+        <div class="flex items-center gap-2"><span
+            class="material-symbols-outlined text-3xl text-slate-900">database</span><span
+            class="text-xl font-bold tracking-tighter text-slate-900">DataCore</span></div>
+        <div class="flex items-center gap-2"><span
+            class="material-symbols-outlined text-3xl text-slate-900">language</span><span
+            class="text-xl font-bold tracking-tighter text-slate-900">GlobalSys</span></div>
+        <div class="flex items-center gap-2"><span
+            class="material-symbols-outlined text-3xl text-slate-900">cloud_done</span><span
+            class="text-xl font-bold tracking-tighter text-slate-900">CloudPulse</span></div>
+        <div class="flex items-center gap-2"><span
+            class="material-symbols-outlined text-3xl text-slate-900">insights</span><span
+            class="text-xl font-bold tracking-tighter text-slate-900">Quantix</span></div>
+        <div class="flex items-center gap-2"><span
+            class="material-symbols-outlined text-3xl text-slate-900">shield_with_heart</span><span
+            class="text-xl font-bold tracking-tighter text-slate-900">SecureNet</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Section (staggered children reveal) -->
+  <section class="py-24 bg-white" id="services">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center max-w-3xl mx-auto mb-20 reveal">
+        <h2 class="text-primary font-bold text-sm uppercase tracking-widest mb-4">Our Services</h2>
+        <h3 class="text-4xl md:text-5xl font-black text-slate-900 mb-6">Tailored Web Solutions</h3>
+        <p class="text-lg text-slate-600">We specialize in building robust, scalable, and beautiful digital experiences
+          that drive business growth.</p>
+      </div>
+      <div class="grid gap-8 lg:grid-cols-2 reveal-stagger">
+        <div
+          class="group p-10 rounded-3xl border border-slate-100 bg-slate-50 hover:bg-white hover:shadow-2xl hover:shadow-slate-200 transition-all duration-300">
+          <div
+            class="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined text-3xl">terminal</span></div>
+          <h4 class="text-2xl font-bold text-slate-900 mb-4">Full-Stack Development</h4>
+          <p class="text-slate-600 leading-relaxed">End-to-end development using modern frameworks like React, Node.js,
+            and advanced cloud infrastructure.</p>
         </div>
+        <div
+          class="group p-10 rounded-3xl border border-slate-100 bg-slate-50 hover:bg-white hover:shadow-2xl hover:shadow-slate-200 transition-all duration-300">
+          <div
+            class="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined text-3xl">rocket_launch</span></div>
+          <h4 class="text-2xl font-bold text-slate-900 mb-4">MVP Creation</h4>
+          <p class="text-slate-600 leading-relaxed">Rapidly launch your product to market with essential features, high
+            polish, and data-driven scalability.</p>
+        </div>
+        <div
+          class="group p-10 rounded-3xl border border-slate-100 bg-slate-50 hover:bg-white hover:shadow-2xl hover:shadow-slate-200 transition-all duration-300">
+          <div
+            class="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined text-3xl">query_stats</span></div>
+          <h4 class="text-2xl font-bold text-slate-900 mb-4">Scalable Web Solutions</h4>
+          <p class="text-slate-600 leading-relaxed">Architecture designed to grow with your user base without
+            compromising performance or security.</p>
+        </div>
+        <div
+          class="group p-10 rounded-3xl border border-slate-100 bg-slate-50 hover:bg-white hover:shadow-2xl hover:shadow-slate-200 transition-all duration-300">
+          <div
+            class="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined text-3xl">dns</span></div>
+          <h4 class="text-2xl font-bold text-slate-900 mb-4">Premium Hosting</h4>
+          <p class="text-slate-600 leading-relaxed">High-speed, secure, and fully managed hosting solutions optimized
+            for the performance needs of growing startups.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Our Work Section (grid staggered) -->
+  <section class="py-24 bg-slate-50" id="work">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 reveal">
+        <div class="max-w-2xl">
+          <h2 class="text-primary font-bold text-sm uppercase tracking-widest mb-4">Portfolio</h2>
+          <h3 class="text-4xl md:text-5xl font-black text-slate-900">Our Recent Work</h3>
+        </div>
+        <p class="text-slate-600 max-w-sm">Diving into diverse industries with specialized solutions that deliver
+          impact.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 reveal-stagger">
+        <!-- Project cards (6 total) -->
+        <div
+          class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-slate-100">
+          <div class="h-64 overflow-hidden relative"><img
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              alt="restaurant"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDI3156ryk9zkYVwD7PI6wKSIHuLmw6CZT02KwMBMwIO_h-PJhdmgKluFQiTkl9xcsMXdtFAVVGSJ9XHidBK8ldQ5uomChxhOxuTMjE7a1IIfjVQGyLggH_NTzXSR2sYTa07_LKfUlew78Su8dmNsHGaa3ZHlBuqWRrhgUxY5aFKz8CPh_H6F97GA2Gb6Nry0n-Al0q5MOLEodZSOk735Q8TFiV9DeFhnfwTkYbeDmF0yvDPKq0kgxyeLF6ULpiheHiT-G_GR5bNUKV" />
+            <div
+              class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-primary">
+              Gastronomy</div>
+          </div>
+          <div class="p-6">
+            <h4 class="text-xl font-bold text-slate-900 mb-2">L'Avenue Digital</h4>
+            <p class="text-slate-600 text-sm">Fine dining reservation system and immersive menu experience.</p>
+          </div>
+        </div>
+        <div
+          class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-slate-100">
+          <div class="h-64 overflow-hidden relative"><img
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="gym"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRe1fLtBf0y2jeECr9IUC1pp2ukQCP_1dzWZJPMOGePoBCS_firhDaRkiApP4xQ4LFN0tZwuCZYTrpUiluhdV1rgYVLqAyyBI_g0BDBTcWz-guBi8saRT4LSWnR51QFa0q3VV3qH2MO9FJHh-gi8NsvNWgiqrWnWIBantKLKzZ7PNReKAOrXPTKg-UshEu-X6ihFipW7siJTaa0SbhdAs3CkqjhKQS51t7fHcRDzloDULkI4MamWnVwxClj90NZ0YI4BdPCrfx1KIk" />
+            <div
+              class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-primary">
+              Fitness</div>
+          </div>
+          <div class="p-6">
+            <h4 class="text-xl font-bold text-slate-900 mb-2">IronPulse</h4>
+            <p class="text-slate-600 text-sm">Membership portal with real-time class booking and analytics.</p>
+          </div>
+        </div>
+        <div
+          class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-slate-100">
+          <div class="h-64 overflow-hidden relative"><img
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              alt="realestate"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBuziIbZqNDQhX1bxRbPofl5N_dFeP2wAsjOboeT0c0hxlniYVJBHcvmvMlAVcDU8qIf9yHvs5_9fJ5azTGSC6nTN9gXDGTnE6hfebypMIHEQBvG_GsUHw0WwaJDL-GQxjj8BhcEzftrebGo0mST7wGAoKGcwyjf9VrCxazJkciUZuo3xyqsZ50_QbrmzdhIwABhvi11_o8SzzUIP9NPz2UXMtbdG1Uv-Er3i24sZoAFI7Hu_6CBJmU0liUiQb9NmN0Ze_o6mttny" />
+            <div
+              class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-primary">
+              PropTech</div>
+          </div>
+          <div class="p-6">
+            <h4 class="text-xl font-bold text-slate-900 mb-2">Skyline Realty</h4>
+            <p class="text-slate-600 text-sm">Premium property listing platform with 3D virtual tours.</p>
+          </div>
+        </div>
+        <div
+          class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-slate-100">
+          <div class="h-64 overflow-hidden relative"><img
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="wellness"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMF7pA4JKXxeo21Vnh5NfanOrCIGqJ3YZylP8GWM-O-n9GTAvxXhA1yKLzf_MZog5Nx3BLihb7d-vBZAr4eSOqO8Mgo84NCvz_XVEFHvp9dDwslcXVJX8jz9amcJwVr5Sg8ku3xhWrUyt_AU4OBPhS4gyKRFCIIs49OB-0SpwOnTngpR38Vs_JkRc7ozBOIDe4uvW4kJA9nw3Y9XXwx01gEdT8XAqcyCfEyKlQVEf3Af8KAaJCikAPjgn8NrdXJgiWDAMHHetaOLrD" />
+            <div
+              class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-primary">
+              Wellness</div>
+          </div>
+          <div class="p-6">
+            <h4 class="text-xl font-bold text-slate-900 mb-2">Aura Spa</h4>
+            <p class="text-slate-600 text-sm">Holistic wellness booking platform and retail e-commerce.</p>
+          </div>
+        </div>
+        <div
+          class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-slate-100">
+          <div class="h-64 overflow-hidden relative"><img
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="barber"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6lsdN84A1V3R57xUmFQAbrs4hdPyYP5ytssmkFI-KsnXuRYJLAWG5SGNHk3xf39p_6W4E7WREEBScYQGIxg3rQ0srXxttE8yQwqHQDicrQy7hG8BxnuFjFAPB7uySEF5-os8q_YgV4Cs9pjYzdtxxr0J2FAugsPFZ_5F-VXmybk5YPxS7CWrwEFLyvB8NppwxigNCdYl17xtqWVUOgBzG0iEx24IBK6wy2J4Tmdzeb8Xa0nwSg_23VspXrgzZXfEHffisIwt6kS7h" />
+            <div
+              class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-primary">
+              Lifestyle</div>
+          </div>
+          <div class="p-6">
+            <h4 class="text-xl font-bold text-slate-900 mb-2">Gent's Cut</h4>
+            <p class="text-slate-600 text-sm">Loyalty-integrated booking app for premium barber services.</p>
+          </div>
+        </div>
+        <div
+          class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-slate-100">
+          <div class="h-64 overflow-hidden relative"><img
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="pet"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuAR8tHD346VMr_fhs-A0ehlZWNPONUbbQQ0XU8UusHqRyB_9yiXbvdHZgDJfoOCXWBndgAcjEyXUXCxLMNNPsHXxqf7LqwmwvK27gbF0hOCX7qzLdU4D-6eXIEMr0z0ABsGttezcUjZ3t3ZF46Hi3U8gDMxWUBXjSXDSd07_AQ5J2jLh9gdacP1nxYi3Fa7i6L8Lw5wg8Db3lDoKg7rpojsawDR9Va1cqfdLBKbvBWHsEpDZCCEgwKGvr3RSL8vcQ_ke40nIrv6Hmur" />
+            <div
+              class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-primary">
+              PetCare</div>
+          </div>
+          <div class="p-6">
+            <h4 class="text-xl font-bold text-slate-900 mb-2">Pawsitive Care</h4>
+            <p class="text-slate-600 text-sm">All-in-one veterinary clinic and pet grooming management system.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Templates Section (reveal staggered) -->
+  <section class="py-24 bg-white" id="templates">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center max-w-3xl mx-auto mb-20 reveal">
+        <h2 class="text-primary font-bold text-sm uppercase tracking-widest mb-4">Ready to Launch</h2>
+        <h3 class="text-4xl md:text-5xl font-black text-slate-900 mb-6">Premium Web Templates</h3>
+        <p class="text-lg text-slate-600">Pre-built, high-performance foundations to jumpstart your digital presence.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 reveal-stagger">
+        <!-- Template cards (4) -->
+        <div
+          class="group bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden flex flex-col">
+          <div class="relative aspect-[4/3] overflow-hidden"><img
+              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+              alt="constuctions"
+              src="./images/contractors.jpg" />
+            <div class="absolute top-4 left-4"><span
+                class="px-4 py-1.5 rounded-full bg-white/95 backdrop-blur-sm text-primary font-bold text-[10px] uppercase tracking-[0.2em] shadow-sm">contractors</span>
+            </div>
+          </div>
+          <div class="p-6 flex flex-col flex-grow">
+            <h4 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-primary transition-colors">Building Strong Foundations for the Future</h4>
+            <p class="text-sm text-slate-500 mb-6">From residential homes to large-scale commercial projects, our team delivers durable construction built with precision and quality craftsmanship.</p>
+            <a href="./templates/constructions/code.html" target="_blank" class="mt-auto flex items-center text-primary font-bold text-xs uppercase tracking-widest gap-2">View
+              Template <span class="material-symbols-outlined text-sm">arrow_forward</span></a href="#">
+          </div>
+        </div>
+        <div
+          class="group bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden flex flex-col">
+          <div class="relative aspect-[4/3] overflow-hidden"><img
+              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+              alt="electricians"
+              src="./images/electrician.jpg" />
+            <div class="absolute top-4 left-4"><span
+                class="px-4 py-1.5 rounded-full bg-white/95 backdrop-blur-sm text-primary font-bold text-[10px] uppercase tracking-[0.2em] shadow-sm">electricians</span>
+            </div>
+          </div>
+          <div class="p-6 flex flex-col flex-grow">
+            <h4 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-primary transition-colors">Reliable Electrical Services You Can Trust
+            </h4>
+            <p class="text-sm text-slate-500 mb-6">From repairs to full installations, our certified electricians deliver safe, efficient, and dependable solutions for homes and businesses.</p>
+            <a href="./templates/electricians/code.html" target="_blank" class="mt-auto flex items-center text-primary font-bold text-xs uppercase tracking-widest gap-2">View
+              Template <span class="material-symbols-outlined text-sm">arrow_forward</span></a>
+          </div>
+        </div>
+        <div
+          class="group bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden flex flex-col">
+          <div class="relative aspect-[4/3] overflow-hidden"><img
+              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="landscapers"
+              src="./images/landscaper.jpg" />
+            <div class="absolute top-4 left-4"><span
+                class="px-4 py-1.5 rounded-full bg-white/95 backdrop-blur-sm text-primary font-bold text-[10px] uppercase tracking-[0.2em] shadow-sm">landscapers</span>
+            </div>
+          </div>
+          <div class="p-6 flex flex-col flex-grow">
+            <h4 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-primary transition-colors">Brew & Bloom
+            </h4>
+            <p class="text-sm text-slate-500 mb-6">Minimalist design for local cafes and artisanal shops.</p>
+            <a href="./templates/landscapers/code.html" target="_blank" class="mt-auto flex items-center text-primary font-bold text-xs uppercase tracking-widest gap-2">View
+              Template <span class="material-symbols-outlined text-sm">arrow_forward</span></a>
+          </div>
+        </div>
+        <div
+          class="group bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden flex flex-col">
+          <div class="relative aspect-[4/3] overflow-hidden"><img
+              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+              alt="mechanics"
+              src="./images/mechanic.jpg" />
+            <div class="absolute top-4 left-4"><span
+                class="px-4 py-1.5 rounded-full bg-white/95 backdrop-blur-sm text-primary font-bold text-[10px] uppercase tracking-[0.2em] shadow-sm">mechanics</span>
+            </div>
+          </div>
+          <div class="p-6 flex flex-col flex-grow">
+            <h4 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-primary transition-colors">VoltService
+            </h4>
+            <p class="text-sm text-slate-500 mb-6">High-conversion landing pages for skilled trades.</p>
+            <a href="./templates/mechanics/code.html" target="_blank" class="mt-auto flex items-center text-primary font-bold text-xs uppercase tracking-widest gap-2">View
+              Template <span class="material-symbols-outlined text-sm">arrow_forward</span></a>
+          </div>
+        </div>
+        <div
+          class="group bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden flex flex-col">
+          <div class="relative aspect-[4/3] overflow-hidden"><img
+              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+              alt="movers"
+              src="./images/movers.jpg" />
+            <div class="absolute top-4 left-4"><span
+                class="px-4 py-1.5 rounded-full bg-white/95 backdrop-blur-sm text-primary font-bold text-[10px] uppercase tracking-[0.2em] shadow-sm">movers</span>
+            </div>
+          </div>
+          <div class="p-6 flex flex-col flex-grow">
+            <h4 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-primary transition-colors">VoltService
+            </h4>
+            <p class="text-sm text-slate-500 mb-6">High-conversion landing pages for skilled trades.</p>
+            <a href="./templates/movers/code.html" target="_blank" class="mt-auto flex items-center text-primary font-bold text-xs uppercase tracking-widest gap-2">View
+              Template <span class="material-symbols-outlined text-sm">arrow_forward</span></a>
+          </div>
+        </div>
+        <div
+          class="group bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden flex flex-col">
+          <div class="relative aspect-[4/3] overflow-hidden"><img
+              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+              alt="plumbers"
+              src="./images/plumbers.jpg" />
+            <div class="absolute top-4 left-4"><span
+                class="px-4 py-1.5 rounded-full bg-white/95 backdrop-blur-sm text-primary font-bold text-[10px] uppercase tracking-[0.2em] shadow-sm">plumbers</span>
+            </div>
+          </div>
+          <div class="p-6 flex flex-col flex-grow">
+            <h4 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-primary transition-colors">VoltService
+            </h4>
+            <p class="text-sm text-slate-500 mb-6">High-conversion landing pages for skilled trades.</p>
+            <a href="./templates/plumbers/code.html" target="_blank" class="mt-auto flex items-center text-primary font-bold text-xs uppercase tracking-widest gap-2">View
+              Template <span class="material-symbols-outlined text-sm">arrow_forward</span></a>
+          </div>
+        </div>
+        <div
+          class="group bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden flex flex-col">
+          <div class="relative aspect-[4/3] overflow-hidden"><img
+              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+              alt="roofers"
+              src="./images/roofers.jpg" />
+            <div class="absolute top-4 left-4"><span
+                class="px-4 py-1.5 rounded-full bg-white/95 backdrop-blur-sm text-primary font-bold text-[10px] uppercase tracking-[0.2em] shadow-sm">roofers</span>
+            </div>
+          </div>
+          <div class="p-6 flex flex-col flex-grow">
+            <h4 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-primary transition-colors">VoltService
+            </h4>
+            <p class="text-sm text-slate-500 mb-6">High-conversion landing pages for skilled trades.</p>
+            <a href="./templates/roofers/code.html" target="_blank" class="mt-auto flex items-center text-primary font-bold text-xs uppercase tracking-widest gap-2">View
+              Template <span class="material-symbols-outlined text-sm">arrow_forward</span></a>
+          </div>
+        </div>
+        <div
+          class="group bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden flex flex-col">
+          <div class="relative aspect-[4/3] overflow-hidden"><img
+              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+              alt="painters"
+              src="./images/painters.jpg" />
+            <div class="absolute top-4 left-4"><span
+                class="px-4 py-1.5 rounded-full bg-white/95 backdrop-blur-sm text-primary font-bold text-[10px] uppercase tracking-[0.2em] shadow-sm">painters</span>
+            </div>
+          </div>
+          <div class="p-6 flex flex-col flex-grow">
+            <h4 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-primary transition-colors">VoltService
+            </h4>
+            <p class="text-sm text-slate-500 mb-6">High-conversion landing pages for skilled trades.</p>
+            <a href="./templates/painters/code.html" target="_blank" class="mt-auto flex items-center text-primary font-bold text-xs uppercase tracking-widest gap-2">View
+              Template <span class="material-symbols-outlined text-sm">arrow_forward</span></a>
+          </div>
+        </div>
+        <div
+          class="group bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden flex flex-col">
+          <div class="relative aspect-[4/3] overflow-hidden"><img
+              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+              alt="home_remodelers"
+              src="./images/home_remodelers.jpg" />
+            <div class="absolute top-4 left-4"><span
+                class="px-4 py-1.5 rounded-full bg-white/95 backdrop-blur-sm text-primary font-bold text-[10px] uppercase tracking-[0.2em] shadow-sm">home remodelers</span>
+            </div>
+          </div>
+          <div class="p-6 flex flex-col flex-grow">
+            <h4 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-primary transition-colors">VoltService
+            </h4>
+            <p class="text-sm text-slate-500 mb-6">High-conversion landing pages for skilled trades.</p>
+            <a href="./templates/home_remodelers/code.html" target="_blank" class="mt-auto flex items-center text-primary font-bold text-xs uppercase tracking-widest gap-2">View
+              Template <span class="material-symbols-outlined text-sm">arrow_forward</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Process Section (reveal staggered) -->
+  <section class="py-24 bg-white" id="process">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center max-w-3xl mx-auto mb-20 reveal">
+        <h2 class="text-primary font-bold text-sm uppercase tracking-widest mb-4">Our Method</h2>
+        <h3 class="text-4xl md:text-5xl font-black text-slate-900 mb-6">How We Work</h3>
+        <p class="text-lg text-slate-600">A streamlined engineering process designed for transparency and speed.</p>
+      </div>
+      <div class="grid md:grid-cols-4 gap-8 relative reveal-stagger">
+        <!-- Process steps (4) -->
+        <div class="text-center space-y-6">
+          <div
+            class="w-20 h-20 bg-white border-2 border-primary text-primary rounded-full flex items-center justify-center mx-auto shadow-lg relative z-10">
+            <span class="material-symbols-outlined text-3xl">search_check</span></div>
+          <div>
+            <h4 class="text-xl font-bold text-slate-900 mb-2">Discovery</h4>
+            <p class="text-slate-500 text-sm">Deep dive into your business goals, target audience, and tech
+              requirements.</p>
+          </div>
+        </div>
+        <div class="text-center space-y-6">
+          <div
+            class="w-20 h-20 bg-white border-2 border-primary text-primary rounded-full flex items-center justify-center mx-auto shadow-lg relative z-10">
+            <span class="material-symbols-outlined text-3xl">draw</span></div>
+          <div>
+            <h4 class="text-xl font-bold text-slate-900 mb-2">Design</h4>
+            <p class="text-slate-500 text-sm">Crafting high-fidelity prototypes and seamless user experiences.</p>
+          </div>
+        </div>
+        <div class="text-center space-y-6">
+          <div
+            class="w-20 h-20 bg-white border-2 border-primary text-primary rounded-full flex items-center justify-center mx-auto shadow-lg relative z-10">
+            <span class="material-symbols-outlined text-3xl">code_blocks</span></div>
+          <div>
+            <h4 class="text-xl font-bold text-slate-900 mb-2">Build</h4>
+            <p class="text-slate-500 text-sm">Robust agile development with continuous integration and testing.</p>
+          </div>
+        </div>
+        <div class="text-center space-y-6">
+          <div
+            class="w-20 h-20 bg-primary text-white rounded-full flex items-center justify-center mx-auto shadow-lg relative z-10">
+            <span class="material-symbols-outlined text-3xl">auto_awesome</span></div>
+          <div>
+            <h4 class="text-xl font-bold text-slate-900 mb-2">Launch</h4>
+            <p class="text-slate-500 text-sm">Deployment and optimization for a flawless market entry.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefits Section (reveal) -->
+  <section class="py-24 bg-background-dark text-white overflow-hidden relative" id="benefits">
+    <div class="absolute inset-0 z-0 opacity-10 pointer-events-none"><svg width="100%" height="100%"
+        xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="1" />
+          </pattern>
+        </defs>
+        <rect fill="url(#grid)" width="100%" height="100%" />
+      </svg></div>
+    <div class="max-w-7xl mx-auto px-6 relative z-10">
+      <div class="grid lg:grid-cols-2 gap-20 items-center">
+        <div class="reveal">
+          <h2 class="text-primary font-bold text-sm uppercase tracking-widest mb-4">Why Fluxvio</h2>
+          <h3 class="text-4xl md:text-5xl font-black mb-8 leading-tight">Innovation at the <br />Core of Business</h3>
+          <div class="space-y-10">
+            <div class="flex gap-6">
+              <div
+                class="flex-shrink-0 w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center text-primary">
+                <span class="material-symbols-outlined">speed</span></div>
+              <div>
+                <h4 class="text-xl font-bold mb-2">Unmatched Speed</h4>
+                <p class="text-slate-400">Our agile workflows ensure you beat the competition to market without cutting
+                  corners.</p>
+              </div>
+            </div>
+            <div class="flex gap-6">
+              <div
+                class="flex-shrink-0 w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center text-primary">
+                <span class="material-symbols-outlined">verified</span></div>
+              <div>
+                <h4 class="text-xl font-bold mb-2">Elite Quality</h4>
+                <p class="text-slate-400">Clean code, rigorous testing, and attention to detail are the foundations of
+                  every project.</p>
+              </div>
+            </div>
+            <div class="flex gap-6">
+              <div
+                class="flex-shrink-0 w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center text-primary">
+                <span class="material-symbols-outlined">lightbulb</span></div>
+              <div>
+                <h4 class="text-xl font-bold mb-2">Forward Innovation</h4>
+                <p class="text-slate-400">We don't just use tech; we leverage the latest trends to keep your business
+                  ahead.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="relative reveal">
+          <div class="rounded-3xl overflow-hidden border border-white/10 shadow-2xl"><img
+              class="w-full grayscale hover:grayscale-0 transition-all duration-700" alt="workspace"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjOfIxCEgZLawZtUUHJboD3LA2ssrz9X7JbB_4QA7wX4zk8MhYg6oehDEbeXzCQNWOjIfXa85Os3Zvqjwpapv2J89Hr47BnZnjYU4iybVI9AGuRSqNIW4Xi2mPjV8je5VvZ2z7YB9QE2jg5aS0cTmPYfOCRQ7aQsMeuAXixy5qG8tg8-QlzoWyUr75D31-YJWMIo--DOYZeFAyJUtecNmxdgYev_xqpG01A33GMeF5qKWs3w5U3qKoV8t7hYOwJcBjW36xdNkkK8PF" />
+          </div>
+          <div class="absolute -top-10 -right-10 w-40 h-40 bg-primary/30 rounded-full blur-[80px]"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section (reveal staggered) -->
+  <section class="py-24 bg-white" id="pricing">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center max-w-3xl mx-auto mb-16 reveal">
+        <h2 class="text-primary font-bold text-sm uppercase tracking-widest mb-4">Pricing</h2>
+        <h3 class="text-4xl md:text-5xl font-black text-slate-900 mb-6">Example Pricing for Fluxvio</h3>
+        <p class="text-lg text-slate-600">Professional service packages tailored for your brand's growth.</p>
+      </div>
+      <!-- Landing Page Pricing -->
+      <div class="mb-20">
+        <h4 class="text-2xl font-bold text-slate-900 mb-8 border-l-4 border-primary pl-4 reveal">Landing Page</h4>
+        <div class="grid md:grid-cols-3 gap-8 reveal-stagger">
+          <!-- Starter -->
+          <div
+            class="p-8 rounded-3xl border border-slate-200 bg-white flex flex-col hover:border-primary transition-colors">
+            <h5 class="text-xl font-bold text-slate-900 mb-4">Starter</h5>
+            <div class="mb-8"><span class="text-4xl font-black text-slate-900">$499</span></div>
+            <ul class="space-y-3 mb-8 text-sm text-slate-600">
+              <li class="flex items-center gap-2"><span
+                  class="material-symbols-outlined text-primary text-lg">check_circle</span> Essential Design</li>
+              <li class="flex items-center gap-2"><span
+                  class="material-symbols-outlined text-primary text-lg">check_circle</span> Single Page</li>
+              <li class="flex items-center gap-2"><span
+                  class="material-symbols-outlined text-primary text-lg">check_circle</span> Mobile Responsive</li>
+            </ul>
+          </div>
+          <!-- Professional -->
+          <div
+            class="p-8 rounded-3xl border-2 border-primary bg-white flex flex-col relative shadow-xl shadow-primary/5">
+            <div
+              class="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full">
+              Recommended</div>
+            <h5 class="text-xl font-bold text-slate-900 mb-4">Professional</h5>
+            <div class="mb-8"><span class="text-4xl font-black text-slate-900">$999</span></div>
+            <ul class="space-y-3 mb-8 text-sm text-slate-600">
+              <li class="flex items-center gap-2"><span
+                  class="material-symbols-outlined text-primary text-lg">check_circle</span> Premium UI Design</li>
+              <li class="flex items-center gap-2"><span
+                  class="material-symbols-outlined text-primary text-lg">check_circle</span> Custom Graphics</li>
+              <li class="flex items-center gap-2"><span
+                  class="material-symbols-outlined text-primary text-lg">check_circle</span> SEO Optimization</li>
+            </ul>
+          </div>
+          <!-- Premium -->
+          <div
+            class="p-8 rounded-3xl border border-slate-200 bg-white flex flex-col hover:border-primary transition-colors">
+            <h5 class="text-xl font-bold text-slate-900 mb-4">Premium</h5>
+            <div class="mb-8"><span class="text-4xl font-black text-slate-900">$1,999</span></div>
+            <ul class="space-y-3 mb-8 text-sm text-slate-600">
+              <li class="flex items-center gap-2"><span
+                  class="material-symbols-outlined text-primary text-lg">check_circle</span> Full Brand Identity</li>
+              <li class="flex items-center gap-2"><span
+                  class="material-symbols-outlined text-primary text-lg">check_circle</span> Conversion Focused</li>
+              <li class="flex items-center gap-2"><span
+                  class="material-symbols-outlined text-primary text-lg">check_circle</span> Priority Support</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- MVP Pricing -->
+      <div>
+        <h4 class="text-2xl font-bold text-slate-900 mb-8 border-l-4 border-primary pl-4 reveal">MVP Web Application
+        </h4>
+        <div class="grid md:grid-cols-3 gap-8 reveal-stagger">
+          <!-- Starter MVP -->
+          <div
+            class="p-8 rounded-3xl border border-slate-200 bg-white flex flex-col hover:border-primary transition-colors">
+            <h5 class="text-xl font-bold text-slate-900 mb-4">Starter MVP</h5>
+            <div class="mb-8"><span class="text-4xl font-black text-slate-900">$2,500</span></div>
+            <ul class="space-y-3 mb-8 text-sm text-slate-600">
+              <li class="flex items-center gap-2"><span
+                  class="material-symbols-outlined text-primary text-lg">check_circle</span> Core Functionality</li>
+              <li class="flex items-center gap-2"><span
+                  class="material-symbols-outlined text-primary text-lg">check_circle</span> User Auth</li>
+              <li class="flex items-center gap-2"><span
+                  class="material-symbols-outlined text-primary text-lg">check_circle</span> Modern Tech Stack</li>
+            </ul>
+          </div>
+          <!-- Startup MVP -->
+          <div
+            class="p-8 rounded-3xl border-2 border-primary bg-white flex flex-col relative shadow-xl shadow-primary/5">
+            <div
+              class="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full">
+              Scale Up</div>
+            <h5 class="text-xl font-bold text-slate-900 mb-4">Startup MVP</h5>
+            <div class="mb-8"><span class="text-4xl font-black text-slate-900">$5,000</span></div>
+            <ul class="space-y-3 mb-8 text-sm text-slate-600">
+              <li class="flex items-center gap-2"><span
+                  class="material-symbols-outlined text-primary text-lg">check_circle</span> Advanced Integrations</li>
+              <li class="flex items-center gap-2"><span
+                  class="material-symbols-outlined text-primary text-lg">check_circle</span> Admin Dashboard</li>
+              <li class="flex items-center gap-2"><span
+                  class="material-symbols-outlined text-primary text-lg">check_circle</span> Data Analytics</li>
+            </ul>
+          </div>
+          <!-- Advanced MVP -->
+          <div
+            class="p-8 rounded-3xl border border-slate-200 bg-white flex flex-col hover:border-primary transition-colors">
+            <h5 class="text-xl font-bold text-slate-900 mb-4">Advanced MVP</h5>
+            <div class="mb-8"><span class="text-4xl font-black text-slate-900">$10,000</span></div>
+            <ul class="space-y-3 mb-8 text-sm text-slate-600">
+              <li class="flex items-center gap-2"><span
+                  class="material-symbols-outlined text-primary text-lg">check_circle</span> Custom Algorithms</li>
+              <li class="flex items-center gap-2"><span
+                  class="material-symbols-outlined text-primary text-lg">check_circle</span> Full Scalability</li>
+              <li class="flex items-center gap-2"><span
+                  class="material-symbols-outlined text-primary text-lg">check_circle</span> 24/7 Monitoring</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section (reveal staggered) -->
+  <section class="py-24 bg-slate-50" id="testimonials">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center max-w-3xl mx-auto mb-20 reveal">
+        <h2 class="text-primary font-bold text-sm uppercase tracking-widest mb-4">Testimonials</h2>
+        <h3 class="text-4xl md:text-5xl font-black text-slate-900 mb-6">Client Success Stories</h3>
+        <p class="text-lg text-slate-600">Don't just take our word for it. Here's what our partners have to say about
+          working with Fluxvio.</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-8 reveal-stagger">
+        <div
+          class="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300">
+          <div class="text-primary mb-6"><span class="material-symbols-outlined text-4xl">format_quote</span></div>
+          <p class="text-slate-600 italic mb-8">"Fluxvio transformed our outdated booking system into a high-performance
+            engine. Their attention to detail and engineering standards are unparalleled."</p>
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold">SC
+            </div>
+            <div>
+              <h4 class="font-bold text-slate-900">Sarah Chen</h4>
+              <p class="text-xs text-slate-500 font-medium uppercase tracking-wider">CEO, L'Avenue Group</p>
+            </div>
+          </div>
+        </div>
+        <div
+          class="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300">
+          <div class="text-primary mb-6"><span class="material-symbols-outlined text-4xl">format_quote</span></div>
+          <p class="text-slate-600 italic mb-8">"The team didn't just build an app; they built a scalable foundation for
+            our entire fitness ecosystem. Truly a world-class agency."</p>
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold">MK
+            </div>
+            <div>
+              <h4 class="font-bold text-slate-900">Marcus Knight</h4>
+              <p class="text-xs text-slate-500 font-medium uppercase tracking-wider">Founder, IronPulse</p>
+            </div>
+          </div>
+        </div>
+        <div
+          class="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300">
+          <div class="text-primary mb-6"><span class="material-symbols-outlined text-4xl">format_quote</span></div>
+          <p class="text-slate-600 italic mb-8">"Working with Fluxvio was the best decision for our PropTech launch.
+            They delivered a complex platform ahead of schedule and under budget."</p>
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold">ER
+            </div>
+            <div>
+              <h4 class="font-bold text-slate-900">Elena Rodriguez</h4>
+              <p class="text-xs text-slate-500 font-medium uppercase tracking-wider">CTO, Skyline Realty</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-slate-950 text-white pt-20 pb-10">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid md:grid-cols-4 gap-12 mb-20">
+        <div class="col-span-2 space-y-6">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center"><span
+                class="material-symbols-outlined text-xl">polymer</span></div><span
+              class="text-2xl font-black tracking-tight">Fluxvio</span>
+          </div>
+          <p class="text-slate-400 max-w-sm leading-relaxed">Leading agency for high-end digital solutions. We bridge
+            the gap between imagination and execution with premium engineering.</p>
+          <div class="flex gap-4"><a
+              class="w-10 h-10 rounded-full bg-slate-900 flex items-center justify-center hover:bg-primary transition-colors"
+              href="#"><span class="material-symbols-outlined text-lg">share</span></a><a
+              class="w-10 h-10 rounded-full bg-slate-900 flex items-center justify-center hover:bg-primary transition-colors"
+              href="#"><span class="material-symbols-outlined text-lg">public</span></a><a
+              class="w-10 h-10 rounded-full bg-slate-900 flex items-center justify-center hover:bg-primary transition-colors"
+              href="#"><span class="material-symbols-outlined text-lg">alternate_email</span></a></div>
+        </div>
+        <div>
+          <h4 class="font-bold mb-6">Services</h4>
+          <ul class="space-y-4 text-slate-400">
+            <li><a class="hover:text-primary transition-colors" href="#">Web Design</a></li>
+            <li><a class="hover:text-primary transition-colors" href="#">SEO Indexing</a></li>
+            <li><a class="hover:text-primary transition-colors" href="#">Hosting</a></li>
+            <li><a class="hover:text-primary transition-colors" href="#">Custom Development</a></li>
+            <li><a class="hover:text-primary transition-colors" href="#">AI Integrations</a></li>
+            <li><a class="hover:text-primary transition-colors" href="#">Automations</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-bold mb-6">Contact Us</h4>
+          <ul class="space-y-4 text-slate-400">
+            <li class="flex items-center gap-3"><span class="material-symbols-outlined text-primary">mail</span>
+              hello@fluxivo.tech</li>
+            <li class="flex items-center gap-3"><span class="material-symbols-outlined text-primary">location_on</span>
+              San Francisco, CA</li>
+          </ul>
+        </div>
+      </div>
+      <div class="pt-10 border-t border-slate-900 flex flex-col justify-between items-center gap-6 md:flex-row">
+        <p class="text-slate-500 text-sm">© 2024 Fluxvio. All rights reserved.</p>
       </div>
     </div>
   </footer>
 
-  <!-- AOS JavaScript -->
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <!-- Intersection Observer for scroll reveals -->
   <script>
-    AOS.init({
-      duration: 700,
-      easing: "ease-out-cubic",
-      once: true,
-      mirror: false,
-      offset: 50,
-    });
+      (function () {
+        const reveals = document.querySelectorAll('.reveal, .reveal-stagger');
+        if (reveals.length === 0) return;
+
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('active');
+              // Optional: unobserve after reveal to reduce load
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' }); // trigger when 15% visible
+
+        reveals.forEach(el => observer.observe(el));
+      })();
   </script>
 </body>
 
